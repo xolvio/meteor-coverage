@@ -20,6 +20,5 @@ $ mrt add velocity-coverage
 $ mrt
 ```
 
-You'll see the leaderboard example started on port 3000, and once the tests have completed, you'll see a coverage report at `velocity-example/tests/
-.reports/coverage/index.html`
+You'll see the leaderboard example started on port 3000, and once the tests have completed, you'll see a coverage report at `velocity-example/tests/.reports/coverage/index.html`
 
