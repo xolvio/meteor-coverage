@@ -10,7 +10,6 @@
        * We register every client that connects to the mirror so that we can get back the
        * coverage reports from all of them
        */
-      console.log(Meteor.connection._lastSessionId);
       Meteor.call('velocityRegisterCoverageClient', Meteor.connection._lastSessionId);
 
       /**
