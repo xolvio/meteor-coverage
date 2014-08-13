@@ -6,6 +6,7 @@
 
 VelocityCoverageMessages = new Meteor.Collection('velocityCoverageMessages');
 VelocityClientCoverage = new Meteor.Collection('velocityClientCoverage');
+VelocityCoverageConnectedClients = new Meteor.Collection('velocityCoverageConnectedClients');
 
 (function () {
   'use strict';
@@ -18,11 +19,15 @@ VelocityClientCoverage = new Meteor.Collection('velocityClientCoverage');
       Meteor.publish('velocityClientCoverage', function () {
         return VelocityClientCoverage.find({});
       });
+      Meteor.publish('velocityCoverageConnectedClients', function () {
+        return VelocityCoverageConnectedClients.find({});
+      });
     }
 
     if (Meteor.isClient) {
       Meteor.subscribe('velocityCoverageMessages');
       Meteor.subscribe('velocityClientCoverage');
+      Meteor.subscribe('velocityCoverageConnectedClients');
     }
   }
 })();

@@ -6,7 +6,6 @@
   "version": "0.0.1",
   "git": "https://github.com/xolvio/velocity-coverage.git",
   "packages": {
-    "velocity": "",
-    "iron-router": ""
+    "velocity": ""
   }
 }

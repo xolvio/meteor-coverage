@@ -9,9 +9,9 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
   "use strict";
 
   if (process.env.NODE_ENV !== 'development' || process.env.IS_MIRROR) {
-    DEBUG && console.log('Not adding velocity coverage code');
     return;
   }
+  DEBUG && console.log('[velocity-coverage] Adding velocity-coverage code');
 
   var PWD = process.env.PWD,
       fs = Npm.require('fs-extra'),
@@ -88,9 +88,8 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
         instrumenterLiteral = '.js' === ext ? 'istanbul' : '.coffee' === ext ? 'ibrik' : '',
         options = {
           'embedSource': true,
-          'preserveComments': true,
-          'noCompact': true,
-          'noAutoWrap': false // TODO experiment with this to see effect on outputted code
+          'preserveComments': false,
+          'noCompact': false
         },
         instrumenter = new _instrumenters[instrumenterLiteral].Instrumenter(options);
 
@@ -99,12 +98,12 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
       var content = fs.readFileSync(filename).toString(),
           mirrorRelativeDir = path.join(Velocity.getMirrorPath(), path.relative(process.env.PWD, path.dirname(filename)));
 
-      DEBUG && console.log('[velocity] Instrumenting source file:', filename);
+      DEBUG && console.log('[velocity-coverage] Instrumenting source file:', filename);
 
       var instrumentedCode = instrumenter.instrumentSync(content, filename);
 
       var targetFile = path.join(mirrorRelativeDir, path.basename(filename));
-      DEBUG && console.log('[velocity] Writing instrumented file to', targetFile);
+      DEBUG && console.log('[velocity-coverage] Writing instrumented file to', targetFile);
       fs.writeFileSync(targetFile, instrumentedCode);
 
     }
@@ -112,9 +111,7 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
 
   /**
    *
-   * Takes all the js and coffee files in the meteor directory and instruments them into the mirror
-   *
-   * Excluded directories: private, public, programs, packages, tests
+   * Instrument all the app js and coffee files in the mirror
    *
    * @method instrumentFiles
    */
@@ -125,7 +122,7 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
     _.each(files, function (file) {
       _instrumentFile(file);
     });
-    DEBUG && console.log('[velocity] Instrumenting', files.length, ' file(s) took', Date.now() - then, 'ms');
+    DEBUG && console.log('[velocity-coverage] Instrumenting', files.length, ' file(s) took', Date.now() - then, 'ms');
   }
 
   /**
@@ -138,17 +135,19 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
   function _getHydratedCollector () {
     var collector = new _instrumenters.istanbul.Collector();
     VelocityMirrors.find().forEach(function (mirror) {
-      var mirrorCoverageObjects = DDP.connect(mirror.rootUrl).call('velocityGetServerCoverageObject');
+      var mirrorCoverageObjects = DDP.connect(mirror.rootUrl).call('velocityGetCoverageObjects');
       collector.add(mirrorCoverageObjects.server);
-      var clientCoverage = {};
-      eval('clientCoverage = ' + mirrorCoverageObjects.client.coverage);
-      collector.add(clientCoverage);
+      _.each(mirrorCoverageObjects.clientCoverageObjects, function(clientCoverageObject) {
+        var clientCoverage = {};
+        eval('clientCoverage = ' + clientCoverageObject.coverage);
+        collector.add(clientCoverage);
+      });
     });
     return collector;
   }
 
   /**
-   * Runs when VelocityAggregateReports shows all frameworks have completed and generates a coverageReporter
+   * Requests the coverage reports from all mirrors and their clients, and generates a coverageReporter
    * that is accessible via <main_app>/coverage
    *
    * @method coverageReporter
@@ -160,20 +159,12 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
           'dir': coverageReportDir
         });
 
+    console.log('[velocity-coverage] wrote coverage report to', coverageReportDir + '/index.html');
     report.writeReport(collector, true);
   }
 
   Velocity.addPreProcessor(instrumentFiles);
   Velocity.addReporter(coverageReporter);
-
-  // create a connect server for the coverage report files, which iron-router will wrap in an iframe.
-  // This is to allow reactive reloading of the report
-  var connect = Npm.require('connect');
-
-  RoutePolicy.declare('/coverage-files', 'network');
-  WebApp.connectHandlers
-    .use(connect.bodyParser())
-    .use('/coverage-files', connect.static(coverageReportDir));
 
 })();
 
