@@ -1,6 +1,6 @@
 # Velocity-Coverage
 
-This package uses [Istanbul](gotwarlost.github.io/istanbul/) to instrument your meteor app code and collect code coverage from all velocity test runs.
+This package uses [Istanbul](http://gotwarlost.github.io/istanbul/) to instrument your meteor app code and collect code coverage from all velocity test runs.
 
 ## Usage
 
