@@ -45,5 +45,5 @@ Then you can start the app:
 $ mrt
 ```
 
-You'll see the leaderboard example started on port 3000, and once the tests have completed, you'll see a coverage report at `<base_url>/coverage/index.html`
+You'll see the leaderboard example started on port 3000, and once the tests have completed, you'll see a coverage report at `localhost:3000/coverage/index.html`
 
