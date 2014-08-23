@@ -17,6 +17,20 @@ $ cd ~/tmp
 $ git clone https://github.com/xolvio/velocity-example.git
 $ cd velocity-example
 $ mrt add velocity-coverage
+```
+
+Because support for the coverage feature is fully merged into Velocity yet, you'll need to use the feature/coverage branch in your smart.json as follows:
+
+```
+    "velocity": {
+      "git": "https://github.com/xolvio/velocity",
+      "branch": "feature/coverage"
+    }
+```
+
+Then you can start the app:
+
+```bash
 $ mrt
 ```
 
