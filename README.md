@@ -1,6 +1,6 @@
 # Velocity-Coverage
 
-Uses [Istanbul](http://gotwarlost.github.io/istanbul/) to instrument your meteor app code. When all test frameworks have completed, velocity-coverage collects code coverage from all mirrors and connected clients, aggregates the coverage reports into one report and serves them to `<base_url>/coverage/index.html`
+Uses [Istanbul](http://gotwarlost.github.io/istanbul/) to instrument your meteor app code. When all test frameworks have completed, velocity-coverage collects code coverage from all mirrors and connected clients, aggregates the coverage reports into one report and serves them to `<base_url>/coverage`
 
 This package will even collect coverage reports prior to a test navigating away from the meteor app!
 
@@ -17,7 +17,7 @@ Because support for the coverage feature is fully merged into Velocity yet, you'
     }
 ```
 
-You can now use velocity as usual and you'll get coverage reports placed in `<base_url>/coverage/index.html`
+You can now use velocity as usual and you'll get coverage reports if you go to `<base_url>/coverage`
 
 #### Example app
 
@@ -45,5 +45,5 @@ Then you can start the app:
 $ mrt
 ```
 
-You'll see the leaderboard example started on port 3000, and once the tests have completed, you'll see a coverage report at `localhost:3000/coverage/index.html`
+You'll see the leaderboard example started on port 3000, and once the tests have completed, you'll see a coverage report at `localhost:3000/coverage`
 
