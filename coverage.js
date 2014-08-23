@@ -183,7 +183,6 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
           'dir': coverageReportDir
         });
 
-
     _addCoverageStaticFilesMiddleware();
 
     DEBUG && console.log('[velocity-coverage] wrote coverage report to', coverageReportDir + '/index.html');

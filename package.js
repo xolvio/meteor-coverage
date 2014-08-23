@@ -15,18 +15,25 @@ Npm.depends({
 });
 
 Package.on_use(function (api) {
+
+  var client = 'client', server = 'server', both = [client, server];
+
   api.use('check');
   api.use('retry');
   api.use('velocity');
   api.use('http');
+  api.use('templating');
+  api.use(['iron-router']);
 
-  api.export('VelocityCoverageMessages', ['client', 'server']);
-  api.export('VelocityClientCoverage', ['client', 'server']);
-  api.export('VelocityCoverageConnectedClients', ['client', 'server']);
+  api.export('VelocityCoverageMessages', both);
+  api.export('VelocityClientCoverage', both);
+  api.export('VelocityCoverageConnectedClients', both);
 
-  api.add_files(['collections.js'], ['server', 'client']);
-  api.add_files(['coverage.js'], 'server');
-  api.add_files(['server-fixture.js'], 'server');
-  api.add_files(['client-fixture.js'], 'client');
+  api.add_files(['collections.js'], both);
+  api.add_files(['coverage.js'], server);
+  api.add_files(['route.js'], client);
+  api.add_files(['coverage.html'], client);
+  api.add_files(['server-fixture.js'], server);
+  api.add_files(['client-fixture.js'], client);
 
 });
