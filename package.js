@@ -6,6 +6,7 @@ Package.describe({
 });
 
 Npm.depends({
+  'connect': '2.9.0',
   'fs-extra': '0.10.0',
   'lodash': '2.4.1',
   'glob': '3.2.9',

@@ -15,6 +15,7 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
 
   var PWD = process.env.PWD,
       fs = Npm.require('fs-extra'),
+      connect = Npm.require('connect'),
       path = Npm.require('path'),
       _ = Npm.require('lodash'),
       glob = Npm.require('glob'),
@@ -22,7 +23,8 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
         istanbul: Npm.require('istanbul'),
         ibrik: Npm.require('ibrik')
       },
-      coverageReportDir = path.join(PWD, 'tests/.reports/coverage');
+      reportsDir = path.join(PWD, 'tests/.reports'),
+      coverageReportDir = path.join(reportsDir, '/coverage');
 
 
   /**
@@ -137,13 +139,35 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
     VelocityMirrors.find().forEach(function (mirror) {
       var mirrorCoverageObjects = DDP.connect(mirror.rootUrl).call('velocityGetCoverageObjects');
       collector.add(mirrorCoverageObjects.server);
-      _.each(mirrorCoverageObjects.clientCoverageObjects, function(clientCoverageObject) {
+      _.each(mirrorCoverageObjects.clientCoverageObjects, function (clientCoverageObject) {
         var clientCoverage = {};
         eval('clientCoverage = ' + clientCoverageObject.coverage);
         collector.add(clientCoverage);
       });
     });
     return collector;
+  }
+
+  /**
+   * Intercepts Meteor's staticFilesMiddleware and monitors requests. If the request is for a /coverage file,
+   * this method will load the relevant static file from the reports directory and serve it.
+   *
+   * @method _addCoverageStaticFilesMiddleware
+   */
+  function _addCoverageStaticFilesMiddleware () {
+    var staticFilesMiddleware = WebAppInternals.staticFilesMiddleware;
+    WebAppInternals.staticFilesMiddleware = function yourStaticFilesMiddleware (options, req, res, next) {
+      var pathname = connect.utils.parseUrl(req).pathname;
+      if (pathname.indexOf('/coverage/') !== -1) {
+        res.writeHead(200, {
+          'Content-type': 'text/html'
+        });
+        res.write(fs.readFileSync(path.join(reportsDir, pathname)).toString());
+        res.end();
+      } else {
+        return staticFilesMiddleware.apply(WebAppInternals, arguments);
+      }
+    };
   }
 
   /**
@@ -159,7 +183,10 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
           'dir': coverageReportDir
         });
 
-    console.log('[velocity-coverage] wrote coverage report to', coverageReportDir + '/index.html');
+
+    _addCoverageStaticFilesMiddleware();
+
+    DEBUG && console.log('[velocity-coverage] wrote coverage report to', coverageReportDir + '/index.html');
     report.writeReport(collector, true);
   }
 
