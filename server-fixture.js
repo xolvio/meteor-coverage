@@ -49,7 +49,7 @@
           totalRetries = 5;
       var checkClientCoverage = function () {
 
-        var allCoverageObjectsReady = true;
+        var allCoverageObjectsReady = false;
 
         var connectedClients = VelocityCoverageConnectedClients.find().fetch();
 
@@ -59,7 +59,7 @@
           DEBUG && console.log('[velocity-coverage] checking coverage object for client', connectedClient.connectionId);
           if (VelocityClientCoverage.find({connectionId: connectedClient.connectionId}).fetch() < 1) {
             DEBUG && console.log('[velocity-coverage] found coverage object for client', connectedClient.connectionId);
-            allCoverageObjectsReady = false;
+            allCoverageObjectsReady = true;
           }
         });
 
@@ -114,6 +114,7 @@
     velocityRegisterCoverageClient: function (connectionId) {
       DEBUG && console.log('[velocity-coverage] client registered with id ', connectionId);
       VelocityCoverageConnectedClients.insert({connectionId: connectionId});
+      DEBUG && console.log('[velocity-coverage] connected clients connectionIds: ', _.pluck(VelocityCoverageConnectedClients.find().fetch(), 'connectionId'));
     }
 
   });
@@ -121,7 +122,9 @@
   // TODO make this keep track of clients that were once connected but disconnected, so we can make sure they posted their coverage
   Meteor.onConnection(function (connection) {
     connection.onClose(function () {
-      console.log('[velocity-coverage] client disconnected with id', connection.id);
+      DEBUG && console.log('[velocity-coverage] client disconnected with id', connection.id);
+      VelocityCoverageConnectedClients.remove({connectionId: connection.id});
+      DEBUG && console.log('[velocity-coverage] connected clients connectionIds: ', _.pluck(VelocityCoverageConnectedClients.find().fetch(), 'connectionId'));
     });
   });
 

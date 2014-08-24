@@ -3,7 +3,7 @@
   "description": "Velocity Coverage, Istanbul code coverage for Meteor",
   "homepage": "https://github.com/xolvio/velocity-coverage",
   "author": "Sam Hatoum",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "git": "https://github.com/xolvio/velocity-coverage.git",
   "packages": {
     "iron-router": "",
