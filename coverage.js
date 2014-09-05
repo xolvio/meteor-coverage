@@ -190,7 +190,7 @@ DEBUG = !!process.env.VELOCITY_DEBUG;
   }
 
   Velocity.addPreProcessor(instrumentFiles);
-  Velocity.addReporter(coverageReporter);
+  Velocity.addPostProcessor(coverageReporter);
 
 })();
 
