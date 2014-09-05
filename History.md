@@ -1,5 +1,9 @@
 ## vNext
 
+## v0.0.3
+
+* Now uses postProcessors instead of reports in velocity
+
 ## v0.0.2
 
 * Coverage reports are now served up at <base_url>/coverage
