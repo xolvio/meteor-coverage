@@ -1,3 +1,11 @@
+# IMPORTANT NOTICE
+
+This project is on hold until we figure out how to post pre-process source files with Meteor. There is [a proposal in the works at the MDG](https://meteor.hackpad.com/Proposal-New-phases-for-the-build-process-KQ8jqchouGs) around the build process and extending it. We're hoping to resume work on this package once we figure out the right way to do it with Velocity.
+
+Thanks for your patience, we want this package as much as you do :)
+
+
+
 # Velocity-Coverage
 
 Uses [Istanbul](http://gotwarlost.github.io/istanbul/) to instrument your meteor app code. When all test frameworks have completed, velocity-coverage collects code coverage from all mirrors and connected clients, aggregates the coverage reports into one report and serves them to `<base_url>/coverage`
