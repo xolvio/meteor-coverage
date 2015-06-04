@@ -4,7 +4,12 @@ This project is on hold until we figure out how to post pre-process source files
 
 Thanks for your patience, we want this package as much as you do :)
 
+#Get the Book
+To learn more about testing with Meteor, consider purchasing our book [The Meteor Testing Manual](http://www.meteortesting.com/?utm_source=coverage&utm_medium=banner&utm_campaign=coverage).
 
+[![](http://www.meteortesting.com/img/tmtm.gif)](http://www.meteortesting.com/?utm_source=coverage&utm_medium=banner&utm_campaign=coverage)
+
+Your support helps us continue our work on Velocity and related frameworks.
 
 # Velocity-Coverage
 
